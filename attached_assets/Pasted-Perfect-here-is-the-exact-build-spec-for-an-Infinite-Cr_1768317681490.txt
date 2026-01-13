@@ -1,0 +1,248 @@
+Perfect — here is the **exact build spec** for an Infinite‑Craft‑style game **with zero AI**, written so you can drop it straight into a Replit project and build it exactly as intended.
+
+This version uses **only predefined logic**, **no API calls**, **no randomness**, and **no external services**. Everything is deterministic and stored locally.
+
+---
+
+# 🔧 **BUILD THIS EXACT GAME (No‑AI Infinite Craft Clone)**
+
+Below is the full, implementation‑ready description of how your game should work.
+
+---
+
+# 1. **Overall Structure**
+You are building a **browser-based**, **HTML/CSS/JS** game with:
+
+- A left panel containing all discovered elements  
+- A large center canvas where tiles can be dragged  
+- A top search bar  
+- A trash bin for deleting tiles  
+- A combination system that uses a **local dictionary** instead of AI  
+
+Everything is saved in **localStorage**.
+
+---
+
+# 2. **Starting Elements**
+Hardcode these four base elements:
+
+```
+Water
+Fire
+Earth
+Air
+```
+
+Each element has:
+
+```
+id: string
+name: string
+icon: string (emoji)
+```
+
+Example:
+
+```
+{ id: "water", name: "Water", icon: "💧" }
+```
+
+---
+
+# 3. **Tile Behavior**
+Every tile on the canvas:
+
+- Can be dragged  
+- Can be dropped onto another tile  
+- Can be clicked to duplicate  
+- Can be deleted by dragging into the trash  
+
+Tiles are **visual only** — no physics.
+
+---
+
+# 4. **UI Layout**
+Build the screen like this:
+
+### Left Panel
+- Shows the 4 base elements pinned at the top  
+- Shows all discovered elements below  
+- Clicking an element spawns a tile on the canvas  
+
+### Center Canvas
+- White background  
+- Free‑positioned tiles  
+- No grid  
+- Tiles stay where the user leaves them  
+
+### Top Bar
+- Search bar  
+- Typing filters discovered elements  
+- Clicking a result spawns a tile  
+
+### Bottom Right
+- Trash icon  
+- Dropping a tile on it deletes that tile instance  
+
+---
+
+# 5. **Combination System (No AI)**
+
+This is the core of your game.
+
+You need a **combination dictionary**:
+
+```
+{
+  "water|fire": "Steam",
+  "water|earth": "Mud",
+  "fire|earth": "Lava",
+  "air|fire": "Smoke",
+  ...
+}
+```
+
+### Rules:
+
+1. **Normalize the pair**  
+   Sort alphabetically:
+
+```
+key = [idA, idB].sort().join("|")
+```
+
+2. **Check if the combo exists**
+   - If yes → return the result element  
+   - If no → generate a fallback name  
+
+### Fallback Name Generator (No AI)
+Use simple deterministic rules:
+
+- If both are objects → combine names:
+
+```
+"Water" + "Tree" → "Water Tree"
+```
+
+- If one is abstract → prefix:
+
+```
+"Fire" + "Idea" → "Fiery Idea"
+```
+
+- If nothing matches → default:
+
+```
+"{A} {B}"
+```
+
+**Important:**  
+Once a fallback name is generated, **save it permanently** in the combination dictionary so the same pair always gives the same result.
+
+---
+
+# 6. **Element Creation**
+When a new element is created:
+
+1. Assign it a unique ID  
+2. Add it to the discovered list  
+3. Add it to the left panel  
+4. Save it in localStorage  
+5. Spawn a tile on the canvas  
+
+---
+
+# 7. **Saving System**
+Save these three things in localStorage:
+
+### 1. Discovered Elements
+```
+elements = {
+  "water": {...},
+  "fire": {...},
+  ...
+}
+```
+
+### 2. Combination Dictionary
+```
+combinations = {
+  "water|fire": "steam",
+  ...
+}
+```
+
+### 3. Canvas Tiles
+Each tile instance:
+
+```
+{
+  instanceId,
+  elementId,
+  x,
+  y
+}
+```
+
+---
+
+# 8. **Loading System**
+On page load:
+
+1. Load elements  
+2. Load combinations  
+3. Load canvas tiles  
+4. If nothing exists, initialize with the 4 base elements  
+
+---
+
+# 9. **Tile Combining Animation**
+When combining:
+
+- Flash both tiles  
+- Remove them  
+- Spawn the new tile with a small “pop” animation  
+
+---
+
+# 10. **Minimal Starter Combination List**
+Use these to make early gameplay feel smart:
+
+```
+water + fire → steam
+water + earth → mud
+water + air → cloud
+fire + earth → lava
+fire + air → smoke
+earth + air → dust
+earth + plant → tree
+water + plant → algae
+fire + plant → ash
+```
+
+You can add more, but this is enough to start.
+
+---
+
+# 11. **What You Will Put on Replit**
+Your Replit project will contain:
+
+```
+index.html
+style.css
+script.js
+```
+
+And everything above will be implemented in JavaScript.
+
+If you want, I can generate:
+
+- The **full folder structure**
+- A **starter template**
+- The **entire script.js skeleton**
+- The **drag-and-drop system**
+- The **combination engine**
+- The **localStorage manager**
+- The **UI rendering functions**
+
+Just tell me and I’ll build the whole starter project for you.
