@@ -40,6 +40,7 @@ const ALL_ELEMENT_DEFINITIONS: Element[] = [
   { id: "electricity", name: "Electricity", icon: "⚡" },
   { id: "energy", name: "Energy", icon: "🔋" },
   { id: "fish", name: "Fish", icon: "🐟" },
+  { id: "flying-fish", name: "Flying Fish", icon: "🐟" },
   { id: "flower", name: "Flower", icon: "🌸" },
   { id: "forest", name: "Forest", icon: "🌲" },
   { id: "glass", name: "Glass", icon: "🥃" },
@@ -657,6 +658,9 @@ export function useGameEngine() {
           if (prev.find(e => e.id === resultElement!.id)) return prev;
           return [...prev, resultElement!];
         });
+      } else {
+        console.error(`Result element definition not found for ID: ${resultId}`);
+        return;
       }
     } else {
       // NO COMBINATION FOUND
