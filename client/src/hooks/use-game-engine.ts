@@ -9,6 +9,13 @@ const INITIAL_ELEMENTS: Element[] = [
   { id: "fire", name: "Fire", icon: "🔥" },
   { id: "earth", name: "Earth", icon: "🌍" },
   { id: "air", name: "Air", icon: "💨" },
+];
+
+const ALL_ELEMENT_DEFINITIONS: Element[] = [
+  { id: "water", name: "Water", icon: "💧" },
+  { id: "fire", name: "Fire", icon: "🔥" },
+  { id: "earth", name: "Earth", icon: "🌍" },
+  { id: "air", name: "Air", icon: "💨" },
   { id: "ash", name: "Ash", icon: "⚱️" },
   { id: "bacteria", name: "Bacteria", icon: "🦠" },
   { id: "beach", name: "Beach", icon: "🏖️" },
@@ -622,11 +629,14 @@ export function useGameEngine() {
 
     if (resultId) {
       // Known combination
-      resultElement = elements.find(e => e.id === resultId);
+      resultElement = ALL_ELEMENT_DEFINITIONS.find(e => e.id === resultId);
       
-      // If we have the recipe but lost the element definition (weird edge case), recreate generic
-      if (!resultElement) {
-        resultElement = discoverNewElement(resultId, "✨");
+      // If found in definitions, add to discovered elements
+      if (resultElement) {
+        setElements((prev) => {
+          if (prev.find(e => e.id === resultElement!.id)) return prev;
+          return [...prev, resultElement!];
+        });
       }
     } else {
       // NO COMBINATION FOUND
