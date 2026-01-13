@@ -539,6 +539,17 @@ export function useGameEngine() {
     const savedCombinations = localStorage.getItem(STORAGE_KEYS.COMBINATIONS);
     const savedTiles = localStorage.getItem(STORAGE_KEYS.TILES);
 
+    // If "reset" param is in URL, clear everything
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('reset')) {
+      localStorage.removeItem(STORAGE_KEYS.ELEMENTS);
+      localStorage.removeItem(STORAGE_KEYS.COMBINATIONS);
+      localStorage.removeItem(STORAGE_KEYS.TILES);
+      window.history.replaceState({}, document.title, window.location.pathname);
+      setIsLoaded(true);
+      return;
+    }
+
     if (savedElements) {
       // Merge initial elements with saved to ensure base ones always exist
       const parsed = JSON.parse(savedElements);
@@ -606,6 +617,15 @@ export function useGameEngine() {
     setTiles([]);
   }, []);
 
+  const resetGame = useCallback(() => {
+    localStorage.removeItem(STORAGE_KEYS.ELEMENTS);
+    localStorage.removeItem(STORAGE_KEYS.COMBINATIONS);
+    localStorage.removeItem(STORAGE_KEYS.TILES);
+    setElements(INITIAL_ELEMENTS);
+    setCombinations({});
+    setTiles([]);
+  }, []);
+
   const discoverNewElement = useCallback((name: string, icon: string): Element => {
     const id = name.toLowerCase().replace(/\s+/g, "-");
     const newElement: Element = { id, name, icon };
@@ -669,6 +689,7 @@ export function useGameEngine() {
     moveTile,
     removeTile,
     clearCanvas,
+    resetGame,
     checkCombination,
     isLoaded
   };
