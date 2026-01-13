@@ -1,18 +1,37 @@
-import { sql } from "drizzle-orm";
-import { pgTable, text, varchar } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, jsonb } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-export const users = pgTable("users", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  username: text("username").notNull().unique(),
-  password: text("password").notNull(),
+// While the game is local-only, we define a schema for potential future syncing
+// or just to satisfy the project structure requirements.
+export const game_backups = pgTable("game_backups", {
+  id: serial("id").primaryKey(),
+  userId: text("user_id").notNull(),
+  elements: jsonb("elements").notNull(),
+  combinations: jsonb("combinations").notNull(),
+  tiles: jsonb("tiles").notNull(),
 });
 
-export const insertUserSchema = createInsertSchema(users).pick({
-  username: true,
-  password: true,
-});
+export const insertGameBackupSchema = createInsertSchema(game_backups);
+export type GameBackup = typeof game_backups.$inferSelect;
+export type InsertGameBackup = z.infer<typeof insertGameBackupSchema>;
 
-export type InsertUser = z.infer<typeof insertUserSchema>;
-export type User = typeof users.$inferSelect;
+// === CLIENT-SIDE TYPES (Synced with LocalStorage) ===
+
+export const ElementSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  icon: z.string(),
+});
+export type Element = z.infer<typeof ElementSchema>;
+
+export const TileSchema = z.object({
+  instanceId: z.string(),
+  elementId: z.string(),
+  x: z.number(),
+  y: z.number(),
+});
+export type Tile = z.infer<typeof TileSchema>;
+
+export const CombinationSchema = z.record(z.string(), z.string()); // "id1|id2" -> "resultId"
+export type CombinationDictionary = z.infer<typeof CombinationSchema>;
